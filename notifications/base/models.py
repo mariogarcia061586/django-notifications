@@ -236,13 +236,19 @@ class AbstractNotification(models.Model):
 
     objects = NotificationQuerySet.as_manager()
 
+    from django.db import models
+    from django.utils.translation import gettext_lazy as _
+    
     class Meta:
         abstract = True
         ordering = ('-timestamp',)
         # speed up notifications count query
-        index_together = ('recipient', 'unread')
+        indexes = [
+            models.Index(fields=['recipient', 'unread']),
+        ]
         verbose_name = _('Notification')
         verbose_name_plural = _('Notifications')
+
 
     def __str__(self):
         ctx = {
